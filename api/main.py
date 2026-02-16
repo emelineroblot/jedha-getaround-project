@@ -5,7 +5,7 @@ API FastAPI pour prédire les prix optimaux de location de voitures
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import List, Dict, Any
 import joblib
 import numpy as np
@@ -92,13 +92,23 @@ model_loaded = load_model()
 
 class PredictionInput(BaseModel):
     """Format d'entrée pour la prédiction"""
-    input: List[List[float]] = Field(
-        ...,
-        description="Liste de listes de features. Chaque liste interne représente un véhicule à prédire.",
-        example=[[0, 140000, 120, 1, 1, 0, 0, 1, 1, 1] + [0]*46]  # Exemple simplifié
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "input": [
+                    [3203, 109839, 135, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+                ]
+            }
+        }
     )
 
-    @validator('input')
+    input: List[List[float]] = Field(
+        ...,
+        description="Liste de listes de features. Chaque liste interne représente un véhicule à prédire."
+    )
+
+    @field_validator('input')
+    @classmethod
     def validate_input(cls, v):
         if not v:
             raise ValueError("La liste d'input ne peut pas être vide")
@@ -106,31 +116,25 @@ class PredictionInput(BaseModel):
             raise ValueError("Chaque élément doit être une liste")
         return v
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "input": [
-                    [3203, 109839, 135, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-                ]
-            }
-        }
-
 class PredictionOutput(BaseModel):
     """Format de sortie pour la prédiction"""
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "prediction": [138.29]
+            }
+        }
+    )
+
     prediction: List[float] = Field(
         ...,
         description="Liste des prix prédits en euros par jour"
     )
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "prediction": [138.29]
-            }
-        }
-
 class HealthResponse(BaseModel):
     """Réponse du health check"""
+    model_config = ConfigDict(protected_namespaces=())
+
     status: str
     model_loaded: bool
     model_name: str
@@ -140,6 +144,8 @@ class HealthResponse(BaseModel):
 
 class ModelInfoResponse(BaseModel):
     """Informations sur le modèle"""
+    model_config = ConfigDict(protected_namespaces=())
+
     model_name: str
     features_count: int
     metrics: Dict[str, float]
