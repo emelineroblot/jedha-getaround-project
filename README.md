@@ -1,5 +1,10 @@
 # 🚗 GetAround - Projet Data Science
 
+## Liens
+
+- API déployée sur Hugging Face : https://emeliner-jedha-getaround-project.hf.space/
+- Dashboard Streamlit déployé sur Hugging Face : https://emeliner-jedha-getaround-streamlit.hf.space/ 
+
 ## 📊 Contexte
 
 **GetAround** est le Airbnb des voitures. Vous pouvez louer des voitures à n'importe qui pour quelques heures ou quelques jours !
