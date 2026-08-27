@@ -1,4 +1,4 @@
-# Python
+# --- Python ---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,57 +6,64 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
+.eggs/
 
-# Jupyter Notebook
+# --- Notebooks ---
 .ipynb_checkpoints
 *.ipynb_checkpoints/
 
-# Data files (if large)
-*.csv
-*.xlsx
-*.xls
-data/*.csv
+# --- Donnees ---
+# Les datasets sont telecharges automatiquement depuis S3 (voir data/README.md) :
+# ils ne sont pas versionnes, mais le code sait les recuperer seul.
 data/*.xlsx
+data/*.csv
 
-# IDE
+# --- Modeles ---
+# Regle generale : on ne versionne pas les artefacts binaires...
+*.pkl
+*.joblib
+*.h5
+# ...SAUF le modele reellement servi par l'API, sans lequel le depot ne
+# permettrait pas de lancer l'API apres un clone.
+!deployment/api/model.pkl
+
+# --- MLflow ---
+mlflow.db
+mlruns/
+
+# --- Tests & outils ---
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# --- IDE / OS ---
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Models (if too large for Git)
-*.pkl
-*.joblib
-*.h5
-*.model
-
-# Environment variables
+# --- Secrets ---
 .env
 .env.local
 
-# Logs
+# --- Logs ---
 *.log
 
-# Contexte
+# --- Documents de travail internes ---
+docs/
+.claude/
+CLAUDE.md
 Contexte_projet.txt
+
+# --- Clones Hugging Face (les Spaces se deploient via git subtree, pas en sous-dossier) ---
+jedha-getaround-project/
+jedha-getaround-streamlit/

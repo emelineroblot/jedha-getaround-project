@@ -1,27 +1,37 @@
-# Data Analysis & Visualization
-pandas
-numpy
-matplotlib
-seaborn
-plotly
-openpyxl
+# Environnement de developpement complet (notebooks + entrainement + tests).
+# Les environnements de PRODUCTION sont plus restreints et epingles a l'identique :
+#   - deployment/api/requirements.txt
+#   - deployment/dashboard/requirements.txt
 
-# Machine Learning
-scikit-learn
-joblib
+# --- Analyse & visualisation ---
+pandas==2.3.1
+numpy==2.3.1
+matplotlib==3.10.6
+seaborn==0.13.2
+plotly==6.3.0
+openpyxl==3.1.5
 
-# Dashboard
-streamlit
+# --- Machine Learning ---
+# Version epinglee : le model.pkl livre a ete serialise avec cette version exacte.
+scikit-learn==1.7.2
+joblib==1.5.2
+mlflow==3.10.0
 
-# API
-fastapi
-uvicorn[standard]
-pydantic
+# --- Dashboard ---
+streamlit==1.55.0
 
-# Utilities
-requests
-python-dotenv
+# --- API ---
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic==2.11.7
 
-# Jupyter
+# --- Tests ---
+pytest==9.1.1
+httpx==0.28.1
+requests==2.32.5
+
+# --- Notebooks ---
 jupyter
 ipykernel
+nbformat
+nbconvert

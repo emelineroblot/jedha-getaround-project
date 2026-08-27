@@ -1,0 +1,8 @@
+streamlit==1.55.0
+pandas==2.3.1
+numpy==2.3.1
+plotly==6.3.0
+openpyxl==3.1.5
+# Requis par pandas Styler.background_gradient et .style : sans matplotlib,
+# pandas leve "ImportError: background_gradient requires matplotlib."
+matplotlib==3.10.6

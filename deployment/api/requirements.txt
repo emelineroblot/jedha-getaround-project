@@ -1,0 +1,9 @@
+# Versions EPINGLEES a l'identique de l'environnement d'entrainement.
+# Un modele scikit-learn serialise n'est pas garanti compatible entre versions :
+# desepingler ces lignes expose a un echec de depicklage au prochain rebuild.
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic==2.11.7
+joblib==1.5.2
+scikit-learn==1.7.2
+numpy==2.3.1
