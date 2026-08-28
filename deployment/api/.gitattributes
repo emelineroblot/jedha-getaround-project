@@ -1,0 +1,4 @@
+# Hugging Face refuse tout fichier binaire qui n'est pas stocke en LFS/Xet,
+# quelle que soit sa taille. Le modele serialise doit donc etre suivi par LFS
+# pour que `deploy.sh` puisse pousser vers le Space.
+*.pkl filter=lfs diff=lfs merge=lfs -text
