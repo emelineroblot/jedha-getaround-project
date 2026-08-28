@@ -92,7 +92,7 @@ jedha-getaround-project/
 ├── deployment/
 │   ├── api/                     # Space HF « API »      (Dockerfile, main.py, model.pkl)
 │   └── dashboard/               # Space HF « Dashboard » (Dockerfile, app.py, analysis.py)
-├── tests/                       # 49 tests pytest (API, analyse, dashboard)
+├── tests/                       # 50 tests pytest (API, analyse, dashboard)
 ├── requirements.txt             # Environnement de développement complet
 └── README.md
 ```
@@ -159,7 +159,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db   # http://localhost:5000
 pytest tests -v
 ```
 
-49 tests couvrent le contrat de l'API, la logique d'analyse (dont deux tests de non-régression sur
+50 tests couvrent le contrat de l'API, la logique d'analyse (dont deux tests de non-régression sur
 les erreurs de méthode corrigées) et l'exécution du dashboard.
 
 ---
