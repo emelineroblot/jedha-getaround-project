@@ -69,14 +69,24 @@ deploy() {
 
   confirm "${name}" || return 0
 
-  # `git subtree split` reecrit l'historique du sous-dossier comme s'il avait
-  # toujours ete a la racine : c'est exactement la structure attendue par un
-  # Space Hugging Face.
-  local sha
-  sha="$(git subtree split --prefix="${prefix}" HEAD)"
-  echo "    commit de deploiement : ${sha}"
+  # On pousse UN SEUL commit, sans parent, contenant l'arbre du sous-dossier.
+  #
+  # Pourquoi pas `git subtree split` : il reconstruit tout l'historique du
+  # sous-dossier, et le hook pre-receive de Hugging Face inspecte CHAQUE commit
+  # pousse. Un ancien commit ou model.pkl n'etait pas encore suivi par LFS
+  # suffit a faire rejeter le push entier, meme si le tip est correct.
+  #
+  # Un Space est une cible de deploiement, pas une source de verite : un commit
+  # unique qui pointe vers le commit source est plus lisible et plus robuste.
+  local tree source_sha commit
+  tree="$(git rev-parse "HEAD:${prefix}")"
+  source_sha="$(git rev-parse --short HEAD)"
+  commit="$(git commit-tree "${tree}"       -m "Deploiement depuis ${prefix} (${source_sha})
 
-  git push --force "${remote}" "${sha}:refs/heads/main"
+Source : https://github.com/emelineroblot/jedha-getaround-project")"
+  echo "    arbre ${tree} -> commit ${commit}"
+
+  git push --force "${remote}" "${commit}:refs/heads/main"
 
   echo "==> ${name} deploye : ${remote}"
 }
