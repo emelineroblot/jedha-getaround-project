@@ -23,8 +23,8 @@ API de Machine Learning prédisant le prix de location journalier optimal d'un v
 | `/` | GET | — | Page d'accueil HTML |
 | `/docs` | GET | — | Documentation rédigée (titre `h1`) |
 | `/swagger` | GET | — | Documentation interactive Swagger UI |
-| `/predict` | POST | `{"input": [[...59 valeurs...]]}` | `{"prediction": [138.29]}` |
-| `/predict/form` | POST | Features nommées | `{"prediction": [141.87]}` |
+| `/predict` | POST | `{"input": [[...59 valeurs...]]}` | `{"prediction": [139.75]}` |
+| `/predict/form` | POST | Features nommées | `{"prediction": [124.68]}` |
 | `/health` | GET | — | État de l'API et du modèle |
 | `/model-info` | GET | — | Métriques et métadonnées du modèle |
 | `/features` | GET | — | Liste ordonnée des 59 features |
