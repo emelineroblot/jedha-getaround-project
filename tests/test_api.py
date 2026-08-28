@@ -214,3 +214,43 @@ def test_la_puissance_moteur_augmente_le_prix(client, api_module):
 @pytest.mark.parametrize("endpoint", ["/health", "/model-info", "/features", "/version"])
 def test_les_endpoints_get_repondent(client, endpoint):
     assert client.get(endpoint).status_code == 200
+
+
+# --------------------------------------------------------------------------- #
+# Cohérence de la documentation avec le modèle réellement livré
+# --------------------------------------------------------------------------- #
+def _readme_curl_example(repo_root):
+    """Extrait le payload et la sortie annoncée de l'exemple curl du README."""
+    import json
+    import re
+
+    readme = (repo_root / "README.md").read_text(encoding="utf-8")
+
+    payload_line = next(
+        line for line in readme.splitlines() if line.lstrip().startswith('-d "{')
+    )
+    payload = json.loads(
+        payload_line.split('-d "', 1)[1].rsplit('" ', 1)[0].replace('\\"', '"')
+    )
+
+    documented = json.loads(
+        re.search(r'\{"prediction": \[[\d.]+\]\}', readme).group(0)
+    )
+    return payload, documented
+
+
+def test_lexemple_curl_du_readme_est_a_jour(client, repo_root):
+    """Le README documente une valeur de sortie : elle doit être celle du modèle.
+
+    Sans ce test, un réentraînement laisse silencieusement une documentation
+    fausse — ce qui s'est produit une fois pendant la mise au point du projet.
+    """
+    payload, documented = _readme_curl_example(repo_root)
+
+    response = client.post("/predict", json=payload)
+
+    assert response.status_code == 200
+    assert response.json() == documented, (
+        f"Le README annonce {documented}, le modèle renvoie {response.json()}. "
+        "Mettre le README à jour après un réentraînement."
+    )

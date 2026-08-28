@@ -178,7 +178,7 @@ curl -i -H "Content-Type: application/json" -X POST \
 ```
 
 ```json
-{"prediction": [135.97]}
+{"prediction": [139.75]}
 ```
 
 ```python

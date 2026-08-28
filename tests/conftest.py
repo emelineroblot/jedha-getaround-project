@@ -11,6 +11,12 @@ sys.path.insert(0, str(REPO_ROOT / "deployment" / "dashboard"))
 
 
 @pytest.fixture(scope="session")
+def repo_root() -> Path:
+    """Racine du dépôt, pour les tests qui lisent la documentation."""
+    return REPO_ROOT
+
+
+@pytest.fixture(scope="session")
 def api_module():
     """Le module FastAPI, modèle chargé."""
     import main
