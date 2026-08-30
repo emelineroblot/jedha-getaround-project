@@ -150,8 +150,16 @@ uvicorn main:app --reload --port 8000
 python src/train_model.py                  # entraînement complet + GridSearch + MLflow
 python src/train_model.py --no-gridsearch  # version rapide
 
-mlflow ui --backend-store-uri sqlite:///mlflow.db   # http://localhost:5000
+python -m mlflow ui --backend-store-uri sqlite:///mlflow.db   # http://localhost:5000
 ```
+
+> **`python -m mlflow`, et non `mlflow`** : selon l'installation, le dossier `Scripts/` de
+> Python n'est pas dans le `PATH` et l'exécutable `mlflow` reste introuvable.
+>
+> `mlflow.db` et `mlruns/` ne sont pas versionnés : sur un dépôt fraîchement cloné,
+> l'interface est vide tant que `python src/train_model.py` n'a pas tourné.
+> Les modèles apparaissent sous l'onglet **Models** (MLFlow 3 les enregistre comme
+> *logged models*), pas dans l'onglet *Artifacts* de chaque run, qui reste vide.
 
 ### Lancer les tests
 
