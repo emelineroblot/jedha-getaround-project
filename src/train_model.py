@@ -345,8 +345,8 @@ def log_to_mlflow(name, pipeline, metrics, clean_report, n_features) -> None:
             })
             mlflow.log_metrics(metrics)
             mlflow.sklearn.log_model(pipeline, name="model")
-        print("\n[MLflow] run enregistré dans ./mlflow.db "
-              "(visualisation : mlflow ui --backend-store-uri sqlite:///mlflow.db)")
+        print("\n[MLflow] run enregistré dans ./mlflow.db (visualisation : "
+              "python -m mlflow ui --backend-store-uri sqlite:///mlflow.db)")
     except Exception as exc:  # le tracking ne doit jamais casser l'entraînement
         print(f"\n[MLflow] tracking ignoré ({type(exc).__name__}: {exc})")
 
