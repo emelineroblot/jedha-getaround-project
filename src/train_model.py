@@ -55,6 +55,12 @@ RANDOM_STATE = 42
 TARGET = "rental_price_per_day"
 MODEL_OUTPUT = REPO_ROOT / "deployment" / "api" / "model.pkl"
 
+# `mlflow.db` et `mlruns/` sont exclus de git : sans cet export, aucune trace du
+# suivi d'expériences ne serait visible dans le dépôt. Ce CSV est la version
+# versionnable du registre, lisible sans lancer MLflow.
+MLFLOW_EXPERIMENT = "getaround-pricing"
+MLFLOW_RUNS_CSV = REPO_ROOT / "metrics" / "mlflow_runs.csv"
+
 
 # --------------------------------------------------------------------------- #
 # Données
@@ -334,7 +340,7 @@ def log_to_mlflow(name, pipeline, metrics, clean_report, n_features) -> None:
 
     try:
         mlflow.set_tracking_uri(f"sqlite:///{(REPO_ROOT / 'mlflow.db').as_posix()}")
-        mlflow.set_experiment("getaround-pricing")
+        mlflow.set_experiment(MLFLOW_EXPERIMENT)
         with mlflow.start_run(run_name=name):
             mlflow.log_params({
                 "model": name,
@@ -349,6 +355,29 @@ def log_to_mlflow(name, pipeline, metrics, clean_report, n_features) -> None:
               "python -m mlflow ui --backend-store-uri sqlite:///mlflow.db)")
     except Exception as exc:  # le tracking ne doit jamais casser l'entraînement
         print(f"\n[MLflow] tracking ignoré ({type(exc).__name__}: {exc})")
+        return
+
+    export_mlflow_runs()
+
+
+def export_mlflow_runs() -> None:
+    """Exporte les runs de l'expérience vers un CSV versionnable.
+
+    `mlflow.db` et `mlruns/` sont exclus de git : sur un dépôt cloné, l'interface
+    MLflow est vide et le suivi d'expériences n'existerait nulle part. Ce CSV le
+    rend lisible sans lancer quoi que ce soit — même rôle que
+    `docs/mlflow_runs.csv` sur le projet final.
+    """
+    try:
+        import mlflow
+
+        runs = mlflow.search_runs(experiment_names=[MLFLOW_EXPERIMENT])
+        MLFLOW_RUNS_CSV.parent.mkdir(parents=True, exist_ok=True)
+        runs.to_csv(MLFLOW_RUNS_CSV, index=False)
+        print(f"[MLflow] {len(runs)} run(s) exporté(s) → "
+              f"{MLFLOW_RUNS_CSV.relative_to(REPO_ROOT).as_posix()}")
+    except Exception as exc:  # l'export ne doit pas non plus casser l'entraînement
+        print(f"[MLflow] export CSV impossible ({type(exc).__name__}: {exc})")
 
 
 if __name__ == "__main__":

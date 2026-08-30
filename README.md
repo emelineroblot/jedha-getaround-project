@@ -76,6 +76,11 @@ Pour un prix médian de 119 €/jour, une erreur absolue moyenne de 10,49 € es
 **recommandation** de prix. La puissance moteur et le kilométrage expliquent à eux seuls **72 %**
 du prix.
 
+Ces chiffres ne sont pas recopiés à la main : ils sont ceux du run journalisé dans
+[`metrics/mlflow_runs.csv`](metrics/mlflow_runs.csv), et ce sont **exactement** ceux que porte
+`deployment/api/model.pkl` — le modèle réellement servi par l'API. Un test les fige pour qu'une
+modification future ne les décale pas en silence.
+
 ---
 
 ## 📂 Structure du projet
@@ -89,6 +94,8 @@ jedha-getaround-project/
 │   └── 02_ML_pricing.ipynb      # Exploration, comparaison de modèles, évaluation
 ├── src/
 │   └── train_model.py           # Entraînement reproductible -> deployment/api/model.pkl
+├── metrics/
+│   └── mlflow_runs.csv          # Export versionné des runs MLflow (mlflow.db exclu de git)
 ├── deployment/
 │   ├── api/                     # Space HF « API »      (Dockerfile, main.py, model.pkl)
 │   └── dashboard/               # Space HF « Dashboard » (Dockerfile, app.py, analysis.py)
@@ -158,8 +165,13 @@ python -m mlflow ui --backend-store-uri sqlite:///mlflow.db   # http://localhost
 >
 > `mlflow.db` et `mlruns/` ne sont pas versionnés : sur un dépôt fraîchement cloné,
 > l'interface est vide tant que `python src/train_model.py` n'a pas tourné.
-> Les modèles apparaissent sous l'onglet **Models** (MLFlow 3 les enregistre comme
+> Les modèles apparaissent sous l'onglet **Models** (MLflow 3 les enregistre comme
 > *logged models*), pas dans l'onglet *Artifacts* de chaque run, qui reste vide.
+
+**Sans rien lancer**, le suivi d'expériences reste lisible : chaque entraînement exporte les
+runs — paramètres, métriques, statut — dans [`metrics/mlflow_runs.csv`](metrics/mlflow_runs.csv),
+versionné. C'est la trace consultable directement sur GitHub ; l'interface MLflow n'en est que
+la vue confortable.
 
 ### Lancer les tests
 
